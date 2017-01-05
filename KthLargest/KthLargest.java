@@ -45,23 +45,14 @@ public class KthLargest {
   
   public static int kthLargest2(int[] a, int k) {
     assert a != null;
-    System.out.println("a is not null");
     int n = a.length;
     assert n > 0 && k <= n;
-    System.out.println("n is > 0 and k <= n");
     Integer[] b = new Integer[k];
-    System.out.println("The size of b is " + b.length);
     
     // Place the first k number elements into the array
     for (int i = 0; i < k; i++){
       b[i] = a[i];
     }
-    System.out.println("sucessfully placed the first " + k + " elements into the array");
-    for (int i = 0; i < k; i++) {
-      System.out.print(b[i] + " ");
-    }
-    System.out.println();
-    
     // Sort the elements in descending order using selection sort
     for (int i = 0; i < k; i++){
       int indexMax = i;
@@ -74,16 +65,8 @@ public class KthLargest {
       b[indexMax] = b[i];
       b[i] = temp;
     }
-    System.out.println("b was sucessfully sorted"); 
-    for (int i = 0; i < k; i++) {
-      System.out.print(b[i] + " ");
-    }
-    System.out.println();
-    
-    
     // Read through the remaining elements
     for (int nextElement = k; nextElement < n; nextElement++) {
-      System.out.println("checking the next element " + a[nextElement] + " > " + b[k-1] + ",  my smallest element");
       if (a[nextElement] > b[k-1]) {
         // the next element is bigger than my smallest element, so insert it into the array
         int insertAt = 0;
@@ -98,14 +81,7 @@ public class KthLargest {
         // insert the new element into the array
         b[insertAt] = a[nextElement];
       }
-      System.out.println("the Array is now ");
-      for (int i = 0; i < b.length; i++) {
-        System.out.print(b[i] + " ");
-      }
-      System.out.println();
-      
     }
-    System.out.println("Finish finding the " + k + "the biggest element, " + b[k-1]);
     return b[k-1];
   }
   
@@ -134,8 +110,8 @@ public class KthLargest {
     assert kthLargest1(a, 9) == -3;
     
     
-    
-        assert kthLargest2(a, 1) == 12;
+    // Inserts for KthLargest2
+    assert kthLargest2(a, 1) == 12;
     assert kthLargest2(a, 2) == 9;
     assert kthLargest2(a, 3) == 8;
     assert kthLargest2(a, 4) == 7;
