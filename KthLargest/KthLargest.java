@@ -32,6 +32,7 @@ public class KthLargest {
     });
     return b[k - 1];
   }
+
   
   /**
    * Weiss (pg 1) A somewhat better algorithm might be to read the first k
@@ -53,18 +54,12 @@ public class KthLargest {
     for (int i = 0; i < k; i++){
       b[i] = a[i];
     }
-    // Sort the elements in descending order using selection sort
-    for (int i = 0; i < k; i++){
-      int indexMax = i;
-      for (int j = i+1; j < k; j++) {
-        if (b[indexMax] < b[j]) {
-          indexMax = j;
-        }
+    // Sort the elements in descending order
+    Arrays.sort(b, new Comparator<Integer>() {
+      public int compare(Integer x, Integer y) {
+        return y.compareTo(x);
       }
-      int temp  = b[indexMax];
-      b[indexMax] = b[i];
-      b[i] = temp;
-    }
+    });
     // Read through the remaining elements
     for (int nextElement = k; nextElement < n; nextElement++) {
       if (a[nextElement] > b[k-1]) {
