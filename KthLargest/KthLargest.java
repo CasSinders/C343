@@ -1,8 +1,15 @@
 import java.util.Arrays;
 import java.util.Comparator;
 
+
 /**
  * TODO: Report the results of your time trials here.
+ * 
+ * kthLargest1 is providing significantly faster results than version 2 for me.  Anywhere between 5-10 times faster
+ * for the array of size 10000.  I believe this is because of the fact that version 2 has to iterate over the 
+ * array every time new values are added, where as version 1 only has to iterate over it during the sort process.
+ * An idea for increasing the speed of version 2 would be to use binary search instead of linear to find the 
+ * index to insert at.  
  *  
  * @author <Christopher Sinders>
  */
@@ -32,7 +39,7 @@ public class KthLargest {
     });
     return b[k - 1];
   }
-
+  
   
   /**
    * Weiss (pg 1) A somewhat better algorithm might be to read the first k
@@ -79,7 +86,6 @@ public class KthLargest {
     }
     return b[k-1];
   }
-  
   /**
    * To enable asserts in Eclipse: 
    * 1. On Windows, go to menu Window. On a Mac, go to menu Eclipse. 
@@ -103,8 +109,6 @@ public class KthLargest {
     assert kthLargest1(a, 7) == 1;
     assert kthLargest1(a, 8) == -2;
     assert kthLargest1(a, 9) == -3;
-    
-    
     // Inserts for KthLargest2
     assert kthLargest2(a, 1) == 12;
     assert kthLargest2(a, 2) == 9;
@@ -114,5 +118,32 @@ public class KthLargest {
     assert kthLargest2(a, 7) == 1;
     assert kthLargest2(a, 8) == -2;
     assert kthLargest2(a, 9) == -3;
+    
+//   In main, create an array containing 10,000 random integers. 
+//   Run each method to find the median value in the array. 
+//   (Note that the median for a group of n numbers is the element that is the n/2 largest.) 
+//   Use System.currentTimeMillis() to compute the running time for each algorithm.
+//   Report your results in comments at the top of your file. 
+    
+    int arraySize = 10000;
+    int[] randomArray = new int[arraySize];
+    for (int i = 0; i < arraySize; i++) {
+      randomArray[i] = (int) (Math.random() * arraySize);
+    }
+    //Test for kthLargest1
+    long startTime = System.currentTimeMillis();
+    kthLargest1(randomArray,arraySize/2);
+    long endTime = System.currentTimeMillis();
+    long duration = endTime - startTime;
+    System.out.println("Time on kthLargest1 for " + arraySize + " integers is = " + 
+                       duration);
+    
+    //Test for kthLargest2
+    startTime = System.currentTimeMillis();
+    kthLargest2(randomArray,arraySize/2);
+    endTime = System.currentTimeMillis();
+    duration = endTime - startTime;
+    System.out.println("Time on kthLargest2 for " + arraySize + " integers is = " + 
+                       duration);
   }
 }
