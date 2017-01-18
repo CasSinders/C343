@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.util.Random;
 
 /**
- * @author (put your name here)
+ * @author (Christopher Sinders)
  * 
  * A ColorTable represents a dictionary of frequency counts, keyed on Color.
  * It is a simplification of Map<Color, Integer>. The size of the key space
@@ -23,6 +23,13 @@ public class ColorTable {
    * Counts the number of collisions during an operation.
    */
   private static int numCollisions = 0;
+  private int initialCapacity;
+  private int bitsPerChannel;
+  private int collisionStrategy;
+  private double rehashThreshold;
+  private int tableSize;
+  private int currentSize = 0;
+  private KeyValue[] table;
 
   /**
    * Returns the number of collisions that occurred during the most recent get or
@@ -33,8 +40,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Constructs a color table with a starting capacity of initialCapacity. Keys in
    * the color key space are truncated to bitsPerChannel bits. The collision resolution
    * strategy is specified by passing either Constants.LINEAR or Constants.QUADRATIC for
@@ -47,28 +52,57 @@ public class ColorTable {
    * @throws RuntimeException if rehashThreshold is not in the range (0.0..1.0] for a
    *                             linear strategy or (0.0..0.5) for a quadratic strategy
    */
+  
   public ColorTable(int initialCapacity, int bitsPerChannel, int collisionStrategy, double rehashThreshold) { 
- 
+	  this.initialCapacity = initialCapacity;	
+	  this.bitsPerChannel = bitsPerChannel;
+	  this.collisionStrategy = collisionStrategy;
+	  this.rehashThreshold = rehashThreshold;
+	  if (initialCapacity < 1 || initialCapacity > Constants.MAX_CAPACITY) {
+		  throw new RuntimeException("initialCapacity is not between " + 1 + " and " Constants.MAX_CAPACITY);
+	  }
+	  if (bitsPerChannel < 1 || bitsPerChannel > 8) {
+		  throw new RuntimeException("bitsPerChannel is not between " + 1 + " and 8");
+	  }
+	  if (collisionStrategy != Constants.LINEAR || collisionStrategy != Constants.QUADRATIC) {
+		  throw new RuntimeException("collisionStrategy is not one of Constants.LINEAR or Constants.QUADRATRIC");
+	  }
+	  if (collisionStrategy == Constants.LINEAR) {
+		  if (rehashThreshold < 0 || rehashThreshold > 1) {
+			  throw new RuntimeException("rehashThreshold is not between 0 and 1 for a linear collision strategy");
+		  }
+	  } else {
+		  if (rehashThreshold < 0 || rehashThreshold > .5) {
+			  throw new RuntimeException("rehashThreshold is not between 0 and .5 for a quadratic collsion strategy");
+		  }
+	  }
+	  table = new KeyValue[initialCapacity];
+	  tableSize = initialCapacity;
   }
 
   /**
-   * TODO
+   * Done
    * 
    * Returns the number of bits per channel used by the colors in this table.
    */
   public int getBitsPerChannel() {
-    return 0;
+    return bitsPerChannel;
   }
 
   /**
-   * TODO
+   * I believe this is good, do testing.
    * 
    * Returns the frequency count associated with color. Note that colors not
    * explicitly represented in the table are assumed to be present with a
    * count of zero. Uses Util.pack() as the hash function.
    */
   public long get(Color color) {
-    return 0;
+	  int index = getIndex(color);
+	  if (table[index] == null) {
+		  return 0;
+	  } else {
+		  return table[index].getCount();
+	  }
   }
 
   /**
@@ -78,18 +112,31 @@ public class ColorTable {
    * or equal to zero. Uses Util.pack() as the hash function.
    */
   public void put(Color color, long count) {
- 
+  /**
+   * increment the current size of the array.
+   */
+	  currentSize++;
+	  if (currentSize > tableSize) {
+		  rehash();
+	  }
+	  int index = getIndex(color);
+	  table[index] = new KeyValue(color, count);
   }
 
   /**
-   * TODO
+   * Done
    * 
    * Increments the frequency count associated with color. Note that colors not
    * explicitly represented in the table are assumed to be present with a
    * count of zero.
    */
   public void increment(Color color) {
-
+	int index = getIndex(color);
+	if (table[index] == null) {
+		table[index] = new KeyValue(color, 1);
+	} else {
+		table[index].incrementCount();
+	}
   }
 
   /**
@@ -98,7 +145,7 @@ public class ColorTable {
    * Returns the load factor for this table.
    */
   public double getLoadFactor() {
-    return -1.0;
+    return rehashThreshold;
   }
 
   /**
@@ -107,7 +154,7 @@ public class ColorTable {
    * Returns the size of the internal array representing this table.
    */
   public int getCapacity() {
-    return -1;
+    return tableSize;
   }
 
   /**
@@ -116,7 +163,7 @@ public class ColorTable {
    * Returns the number of key/value associations in this table.
    */
   public int getSize() {
-    return 0;
+    return currentSize;
   }
 
   /**
@@ -125,7 +172,7 @@ public class ColorTable {
    * Returns true iff this table is empty.
    */
   public boolean isEmpty() {
-    return true;
+	return currentSize == 0;
   }
 
   /**
@@ -144,7 +191,32 @@ public class ColorTable {
    * @throws RuntimeException if the table is already at maximum capacity.
    */
   private void rehash() { 
+	  if (tableSize == Constants.MAX_CAPACITY) {
+		  throw new RuntimeException("Reached max size of the table");
+	  }
+	  /*
+	   * get 4 * i + 3 that is greater than twice the table size.
+	   */
+	  int i = ((tableSize * 2) / 4) - 3;
+	  
+	  /* 
+	   * find the next prime from of 4 * i + 3 to be the table size.
+	   */
+	  
+	  while(Util.isPrime(((4 * i) + 3))) {
+		  i++;
+	  }
+	  int temp = (4 * i) + 3;
+	  if (temp < 0) {
+		  temp = Constants.MAX_CAPACITY;
+	  }
+	  /* Create a new instance of ColorTable.  Hash everything from the old ColorTable into the new one.
+	   * Set the current instance of ColorTable to the new instance.
+	   * 
+	   */
+	  ColorTable tempTable = new ColorTable(temp, bitsPerChannel, collisionStrategy, rehashThreshold);
 
+	  this = tempTable;
   }
 
   /**
@@ -156,6 +228,37 @@ public class ColorTable {
   public Iterator iterator() {
     return null;
   }
+  
+  /*
+   * Finds the index of a color, or the next avaliable index
+   */
+  public int getIndex(Color color) {
+	  int hash = Util.pack(color, bitsPerChannel);
+	  numCollisions = 0;
+	  int collision = 0;
+	  if (collisionStrategy == Constants.LINEAR) {
+		  while(table[(hash + collision) % tableSize] != null) {
+			  numCollisions++;
+			  if (table[(hash + collision) % tableSize].getKey() == color) {
+				  return ((hash + collision) % tableSize);
+			  }
+			  collision++;
+		  }
+		  return ((hash + collision) % tableSize);
+	  } else {
+		  /* 
+		   * Use the quadratic collision strategy
+		   */
+		  while(table[(hash + (int) Math.pow(collision, 2)) % tableSize] != null) {
+			  numCollisions++;
+			  if (table[(hash + (int) Math.pow(collision, 2)) % tableSize].getKey() == color) {
+				  return (hash + (int) Math.pow(collision, 2)) % tableSize;
+			  }
+			  collision++;
+		  }
+		  return (hash + (int) Math.pow(collision, 2)) % tableSize;
+	  }
+  }
 
   /**
    * TODO
@@ -163,7 +266,15 @@ public class ColorTable {
    * Returns a String representation of this table.
    */
   public String toString() {
-    return "";
+	  String answer = "[";
+	  for (int i = 0; i < tableSize; i++) {
+		  if (table[i] != null) {
+			  answer = answer + i + table[i].getKey() + "," + table[i].getCount() + ", ";
+		  }
+	  }
+	  answer = answer + "]";
+	  
+    return answer;
   }
 
   /**
@@ -173,7 +284,7 @@ public class ColorTable {
    * The sole purpose of this function is to aid in writing the unit tests.
    */
   public long getCountAt(int i) { 
-    return 0;
+	  return table[i].getCount();
   }
 
   /**
