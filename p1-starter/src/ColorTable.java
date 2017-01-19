@@ -252,23 +252,34 @@ public class ColorTable {
   public Iterator iterator() {
 	  class Iterat implements Iterator {
 		  long current = 0;
+		  int r = 0;
+		  int g = 0;
+		  int b = 0;
+		  int currentChannel = bitsPerChannel;
 		  public boolean hasNext() {
-			  int i = 0;
-			  while ((i + current) < tableSize) {
-				  if (table[i+current] != null) {
-					  return true;
-				  }
-				  i++;
-			  }
-			  return false;
+			// TO DO 
+			  
+			  
+			  
+			  
 		  }
 		  public long next() {
 			  if(this.hasNext()) {
-				  while(table[(int) current] == null) {
-					  current++;
+				  long ans = 0;
+				  // get the current answer
+				  if (table[getIndex(new Color(r,g,b))] == null) {
+					  ans = 0;
+				  } else {
+					  ans = table[getIndex(new Color(r,g,b))].getCount();
 				  }
+				  // switch the rgb values to the next set
+				  
+				  
+				  
+				  
+				  //
 			  }
-			return current;
+			  return ans;
 		  }
 	  }
     return new Iterat();
