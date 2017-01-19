@@ -257,7 +257,7 @@ public class ColorTable {
 		  }
 		  public long next() {
 			  if(this.hasNext()) {
-				  if(table[(int) current] == null)
+				  if(table[(int)current] == null)
 					  current++;
 			  	  } else {
 				    return current;
