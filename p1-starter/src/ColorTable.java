@@ -253,15 +253,22 @@ public class ColorTable {
 	  class Iterat implements Iterator {
 		  long current = 0;
 		  public boolean hasNext() {
-			  return current+1 < tableSize;
+			  int i = 0;
+			  while ((i + current) < tableSize) {
+				  if (table[i+current] != null) {
+					  return true;
+				  }
+				  i++;
+			  }
+			  return false;
 		  }
 		  public long next() {
 			  if(this.hasNext()) {
-				  if(table[(int)current] == null)
+				  while(table[(int) current] == null) {
 					  current++;
-			  	  } else {
-				    return current;
+				  }
 			  }
+			return current;
 		  }
 	  }
     return new Iterat();
