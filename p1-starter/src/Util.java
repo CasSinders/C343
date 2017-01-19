@@ -17,9 +17,29 @@ public class Util {
    *    color table.
    */
   public static double cosineSimilarity(ColorTable A, ColorTable B) {
-    return 1.0;
+	  Iterator iterate = A.iterator();
+	  double dotProduct = 0;
+	  while(iterate.hasNext()) {
+		  int i = (int) iterate.next();
+		  dotProduct += A.getCountAt(i) * B.getCountAt(i);
+	  }
+	  double aMagnitude = getMagnitude(A);
+	  double bMagnitude = getMagnitude(B);
+	  return dotProduct / (aMagnitude * bMagnitude);
   }
- 
+  
+  /*
+   * Finds the magnitude of a given table.
+   */
+  private static double getMagnitude(ColorTable table) {
+	 Iterator iterate = table.iterator();
+	 double sum = 0;
+	 while(iterate.hasNext()){
+		 int i = (int) iterate.next();
+		 sum = Math.pow(table.getCountAt(i), 2);
+	 }
+	 return Math.sqrt(sum);
+  }
   /**
    * Returns true iff n is a prime number. We handles several common cases quickly, and then 
    * use a variation of the Sieve of Eratosthenes.
@@ -115,9 +135,16 @@ public class Util {
     System.out.println("green encoded in " + (3 * 4) + " bits: " + green);
     System.out.println(unpack(green, 4));
     
-    for (int n = 0; n < 300; n++) {
+    /*for (int n = 0; n < 300; n++) {
       if (isPrime(n)) 
         System.out.println(n + "  ");
+    }*/
+    ColorTable test = new ColorTable(3, 6, Constants.QUADRATIC, .49);
+    int[] testData = new int[] { 32960, 32960, 32960, 32960 };
+    for (int i = 0; i < testData.length; i++) {
+    	test.increment(new Color(testData[i]));
     }
+    System.out.println(cosineSimilarity(test, test));
+    
   }
 }

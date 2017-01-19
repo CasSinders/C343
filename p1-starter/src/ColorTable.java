@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.util.Random;
+import java.util.NoSuchElementException;
 
 /**
  * @author (Christopher Sinders)
@@ -134,6 +135,7 @@ public class ColorTable {
 	int index = getIndex(color);
 	if (table[index] == null) {
 		table[index] = new KeyValue(color, 1);
+		currentSize++;
 	} else {
 		table[index].incrementCount();
 	}
@@ -145,7 +147,7 @@ public class ColorTable {
    * Returns the load factor for this table.
    */
   public double getLoadFactor() {
-    return currentSize / tableSize;
+    return ((double) currentSize) / tableSize;
   }
 
   /**
@@ -191,43 +193,49 @@ public class ColorTable {
    * @throws RuntimeException if the table is already at maximum capacity.
    */
   private void rehash() { 
+	  // System.out.println("inside of rehash");
 	  if (tableSize == Constants.MAX_CAPACITY) {
 		  throw new RuntimeException("Reached max size of the table");
 	  }
-	  /*
-	   * get 4 * i + 3 that is greater than twice the table size.
-	   */
-	  int i = ((tableSize * 2) / 4) - 3;
+	  // find out what value of i to start with
+	  int i = ((tableSize * 2) - 3) / 4;
+	  // it has to have a minimum value of 1
+	  i = Math.max(i, 1);
+	  // System.out.println("initial value of i is " + i);
 	  
-	  /* 
-	   * find the next prime from of 4 * i + 3 to be the table size.
-	   */
-	  
-	  while(Util.isPrime(((4 * i) + 3))) {
+	  while(!Util.isPrime( ((4 * i) + 3)) ) {
 		  i++;
 	  }
 	  int newSize = (4 * i) + 3;
 	  if (newSize < 0) {
 		  newSize = Constants.MAX_CAPACITY;
 	  }
+	  // System.out.println("the new size is " + newSize);
 	  /* Create a new instance of ColorTable.  Hash everything from the old ColorTable into the new one.
 	   * Set the current instance of ColorTable to the new instance.
 	   */
 	  KeyValue[] tempTable = new KeyValue[newSize];
 	  for (int j = 0; j < tableSize; j++) {
+		  int index = 0;
 		  if (table[j] != null) {
 			  int hash = Util.pack(table[j].getKey(), bitsPerChannel);
 			  int collision = 0;
+			  // Do Linear Strategy
 			  if (collisionStrategy == Constants.LINEAR) {
-				  while(tempTable[(hash + collision) % newSize] != null) {
+				  index = (hash + collision) % newSize;
+				  while(tempTable[index] != null) {
 					  collision++;
+					  index = (hash + collision) % newSize;
 				  }
-				  tempTable[(hash + collision) % newSize] = table[(j)]; 
+				  tempTable[index] = table[j];
+				  // Since it is not Linear do Quadratic
 			  } else { 
-				  while(tempTable[(hash + (int) Math.pow(collision, 2)) % newSize] != null) {
+				  index = (hash + (int) Math.pow(collision,2)) % newSize;
+				  while(tempTable[index] != null) {
 					  collision++;
+					  index = (hash + (int) Math.pow(collision, 2)) % newSize;
 				  }
-				  tempTable[(hash + (int) Math.pow(collision, 2)) % newSize] = table[j];
+				  tempTable[index] = table[j];
 			  }
 		  }
 	  }
@@ -242,40 +250,70 @@ public class ColorTable {
    * returns the sequence of frequency counts.
    */
   public Iterator iterator() {
-    return null;
+	  class Iterat implements Iterator {
+		  long current = 0;
+		  public boolean hasNext() {
+			  return current+1 < tableSize;
+		  }
+		  public long next() {
+			  if(this.hasNext()) {
+				  if(table[(int) current] == null)
+					  current++;
+			  	  } else {
+				    return current;
+			  }
+		  }
+	  }
+    return new Iterat();
   }
   
   /*
    * Finds the index of a color, or the next available index
    */
   public int getIndex(Color color) {
+	  // System.out.println("testing " + getLoadFactor() + " > " + rehashThreshold);
+	  if (getLoadFactor() > rehashThreshold) {
+		  rehash();
+	  }
+	  // System.out.println("Inside of getIndex");
 	  int hash = Util.pack(color, bitsPerChannel);
 	  numCollisions = 0;
 	  int collision = 0;
+	  int index = 0;
+	  // Use the Linear strategy
 	  if (collisionStrategy == Constants.LINEAR) {
-		  while(table[(hash + collision) % tableSize] != null) {
-			  if (table[(hash + collision) % tableSize].getKey() == color) {
-				  System.out.println("Found index " + (hash + collision) % tableSize);
-				  return ((hash + collision) % tableSize);
+		  index = (hash + collision) % tableSize;
+		  while(table[index] != null) {
+			  // System.out.println("returning " + index);
+			  if (table[index].getKey().equals(color)) {
+				  // System.out.println(index);
+				  return index;
 			  }
 			  collision++;
 			  numCollisions++;
+			  index = (hash + collision) % tableSize;
 		  }
-		  System.out.println("Found index " + (hash + collision) % tableSize);
-		  return ((hash + collision) % tableSize);
+		  // System.out.println(index);
+		  return index;
 	  } else {
-		  /* 
-		   * Use the quadratic collision strategy
-		   */
-		  while(table[(hash + (int) Math.pow(collision, 2)) % tableSize] != null) {
-			  if (table[(hash + (int) Math.pow(collision, 2)) % tableSize].getKey() == color) {
-				  System.out.println("found index " + (hash + collision) % tableSize);
-				  return (hash + (int) Math.pow(collision, 2)) % tableSize;
+		  // Since it is not Linear, it must be quadratic
+		  index = (hash + (int) Math.pow(collision, 2)) % tableSize;
+		  // System.out.println(index);
+		  while(table[index] != null) {
+			 // System.out.println("testing if " + table[index].getKey() + " is == " + color);
+			  if (table[index].getKey().equals(color)) {
+		//		  System.out.println("The colors matched");
+				  // System.out.println("found index " + index);
+				  // System.out.println(index);
+				  return index;
 			  }
 			  collision++;
 			  numCollisions++;
+			  index = (hash + (int) Math.pow(collision, 2)) % tableSize;
+			  // // System.out.println("now trying index" + index);
 		  }
-		  return (hash + (int) Math.pow(collision, 2)) % tableSize;
+		  // System.out.println("found index " + index);
+		  return index;
 	  }
   }
 
@@ -288,7 +326,7 @@ public class ColorTable {
 	  String answer = "[";
 	  for (int i = 0; i < tableSize; i++) {
 		  if (table[i] != null) {
-			  answer = answer + i + table[i].getKey() + "," + table[i].getCount() + ", ";
+			  answer = answer + i + ":" + Util.pack(table[i].getKey(),bitsPerChannel) + "," + table[i].getCount() + ", ";
 		  }
 	  }
 	  answer = answer + "]";
@@ -301,10 +339,13 @@ public class ColorTable {
    * Returns the count in the table at index i in the array representing the table.
    * The sole purpose of this function is to aid in writing the unit tests.
    */
-  public long getCountAt(int i) { 
+  public long getCountAt(int i) {
+	  if (table[i] != null) {
 	  return table[i].getCount();
+	  } else { 
+		  return 0;
+	  }
   }
-
   /**
    * Simple testing.
    */
@@ -312,11 +353,20 @@ public class ColorTable {
     ColorTable table = new ColorTable(3, 6, Constants.QUADRATIC, .49);
     int[] data = new int[] { 32960, 4293315, 99011, 296390 };
     for (int i = 0; i < data.length; i++) {
-    System.out.println("on increment " + i);
+     //System.out.println("on increment " + i);
       table.increment(new Color(data[i]));
     }
-    System.out.println("capacity: " + table.getCapacity()); // Expected: 7
-    System.out.println("size: " + table.getSize());         // Expected: 3
+     System.out.println("capacity: " + table.getCapacity()); // Expected: 7
+     System.out.println("size: " + table.getSize());         // Expected: 3
+    
+     System.out.println();
+    ColorTable test = new ColorTable(3, 6, Constants.QUADRATIC, .49);
+    int[] testData = new int[] { 32960, 32960, 32960, 32960 };
+    for (int i = 0; i < testData.length; i++) {
+    	test.increment(new Color(testData[i]));
+    }
+    
+    
     
     /* The following automatically calls table.toString().
        Notice that we only include non-zero counts in the String representation.
@@ -328,6 +378,7 @@ public class ColorTable {
        You do not have to mimic this format exactly, but strive for something compact
        and readable.
        */
-    System.out.println(table);  
+     System.out.println(table);
+     System.out.println(test);
   }
 }
