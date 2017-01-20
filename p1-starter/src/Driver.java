@@ -27,7 +27,6 @@ public class Driver {
   }
 
   /**
-   * TODO
    * 
    * Return the result of running Util.cosineSimilarity() on the vectorized images.
    * 

@@ -1,0 +1,88 @@
+Full Name: Christopher A. Sinders
+username: csinders
+Lab Section: C
+
+
+1.)Describe your approach to implementing the hash table inside ColorTable. Defend your design decision to either use two separate arrays for keys and values,  or just one array with objects representing the key/value pairs.
+
+I used a key/value pair implementation.  I believed that it would be easier to keep track of how the key's and values are together this way.  As well, it allows easier manipulation of the object.  If I need to   change the object to include something beyond the key/value pair, it would be easier to implement.  
+
+
+
+
+2.) If you implemented any helper methods for ColorTable, other than those specified in the starter code, describe each one briefly. Explain your reasoning for implementing each helper.
+
+For ColorTable I implemented Iterat as a public class inside of Colortable so that it can implement Iterator.   I also implemented a function of getIndex that gets either the index of the color passed into it, or  the next avaliable index inside of the array.  I created this because put and increment seemed to have similar  code and this one seemed like it could be used for both.  
+
+
+
+3.) When you use 2 bits per channel, how many black pixel are there in the davinci image? What about the vangogh image?
+
+The number of black colors in Davinici is 42831
+The number of black colors in Vangogh is 42127
+
+
+
+4.)Report on the experiments you performed in the Driver. Which two images are the most similar at 4 bits per channel? Be sure to experiment with the two different collision resolution strategies and include the collision counts from your experiments.
+
+The following tests are done with the Quadratic collision and a .4 rehashThreshold
+
+Testing the Mona Lisa vs Starry Night
+The number of collisions is 738000
+The Similarity is 0.298912101469054
+
+Testing the Mona Lisa vs Christinas World
+The number of collisions is 1084800
+The Similarity is 0.18573052907210674
+
+Testing the Mona Lisa vs Blue Dancers
+The number of collisions is 1476400
+The Similarity is 0.2764785109445811
+
+Testing the Starry Night vs Christina's World
+The number of collisions is 1369200
+The Similarity is 0.09500996765476481
+
+Testing the Starry Night vs Degas
+The number of collisions is 1855600
+The Similarity is 0.9488708301340804
+
+Testing the Christinas World vs Degas
+The number of collisions is 2006000
+The Similarity is 0.10149410655176402
+
+
+
+The following tests are done with Linear Collision and a .8 rehashThreshold
+
+Testing the Mona Lisa vs Starry Night
+The number of collisions is 738000
+The Similarity is 0.298912101469054
+
+Testing the Mona Lisa vs Christinas World
+The number of collisions is 1084800
+The Similarity is 0.18573052907210674
+
+Testing the Mona Lisa vs Degas
+The number of collisions is 1476400
+The Similarity is 0.2764785109445811
+
+Testing the Starry Night vs Christinas World
+The number of collisions is 1369200
+The Similarity is 0.09500996765476481
+
+Testing the Starry Night vs Degas
+The number of collisions is 1855600
+The Similarity is 0.9488708301340804
+
+Testing the Christinas World vs Degas
+The number of collisions is 2006000
+The Similarity is 0.10149410655176402
+
+
+It appears that Starry Night and Chrsitina's World has a slightly higher similarity than Starry Night and Degas.  
+
+
+5.) What was the most significant thing you learned by completing this project?
+
+The thing that i learned the most from this project was the need to start working early.  I ended up doing a majority of this project on the thursday before it was due.  I believe that I spent a good 5 hours wastefully debilitating over how to do Iterator when I could've spent that time doing something else and been processing it at the back of the brain.  I feel like a wasted a lot of time that I could've spent doing something more productive.  

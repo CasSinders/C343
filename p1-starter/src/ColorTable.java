@@ -128,17 +128,15 @@ public class ColorTable {
   }
 
   /**
-   * Done
    * 
-   * Returns the number of bits per channel used by the colors in this table.
+   *   Returns the number of bits per channel used by the colors in this table.
    */
   public int getBitsPerChannel() {
     return bitsPerChannel;
   }
 
   /**
-   * I believe this is good, do testing.
-   * 
+   ** 
    * Returns the frequency count associated with color. Note that colors not
    * explicitly represented in the table are assumed to be present with a
    * count of zero. Uses Util.pack() as the hash function.
@@ -153,8 +151,7 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
+   *  
    * Associates the count with the color in this table. Do nothing if count is less than
    * or equal to zero. Uses Util.pack() as the hash function.
    */
@@ -169,8 +166,7 @@ public class ColorTable {
   }
 
   /**
-   * Done
-   * 
+   *  
    * Increments the frequency count associated with color. Note that colors not
    * explicitly represented in the table are assumed to be present with a
    * count of zero.
@@ -188,17 +184,13 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
-   * Returns the load factor for this table.
+    * Returns the load factor for this table.
    */
   public double getLoadFactor() {
     return ((double) currentSize) / tableSize;
   }
 
   /**
-   * TODO
-   * 
    * Returns the size of the internal array representing this table.
    */
   public int getCapacity() {
@@ -206,8 +198,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Returns the number of key/value associations in this table.
    */
   public int getSize() {
@@ -215,8 +205,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Returns true iff this table is empty.
    */
   public boolean isEmpty() {
@@ -224,8 +212,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Increases the size of the array to the smallest prime greater than double the 
    * current size that is of the form 4j + 3, and then moves all the key/value 
    * associations into the new array. 
@@ -290,8 +276,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Returns an Iterator that marches through each color in the key color space and
    * returns the sequence of frequency counts.
    */
@@ -300,7 +284,7 @@ public class ColorTable {
   }
   
   /*
-   * Finds the index of a color, or the next available index
+   * Finds the index of a color, or the next available index for the color according to hashing strategy
    */
   public int getIndex(Color color) {
 	  //System.out.println("testing " + getLoadFactor() + " > " + rehashThreshold);
@@ -350,8 +334,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Returns a String representation of this table.
    */
   public String toString() {
@@ -366,8 +348,6 @@ public class ColorTable {
   }
 
   /**
-   * TODO
-   * 
    * Returns the count in the table at index i in the array representing the table.
    * The sole purpose of this function is to aid in writing the unit tests.
    */
