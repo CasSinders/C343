@@ -17,14 +17,22 @@ public class Util {
    *    color table.
    */
   public static double cosineSimilarity(ColorTable A, ColorTable B) {
-	  Iterator iterate = A.iterator();
+	  Iterator iterateA = A.iterator();
+	  Iterator iterateB = B.iterator(); 
 	  double dotProduct = 0;
-	  while(iterate.hasNext()) {
-		  int i = (int) iterate.next();
-		  dotProduct += A.getCountAt(i) * B.getCountAt(i);
+	  while (iterateA.hasNext() && iterateB.hasNext()) {
+		  long tempA = iterateA.next();
+		  long tempB = iterateB.next();
+//		  System.out.println("tempA is = " + tempA);
+//		  System.out.println("tempB is = " + tempB);
+		  dotProduct += tempA * tempB;
 	  }
+//	  System.out.println("The dotProduct is " + dotProduct);
 	  double aMagnitude = getMagnitude(A);
 	  double bMagnitude = getMagnitude(B);
+//	  System.out.println("the magnitude of A is " + aMagnitude);
+//	  System.out.println("The magnitude of B is " + bMagnitude);
+	  
 	  return dotProduct / (aMagnitude * bMagnitude);
   }
   
@@ -35,8 +43,7 @@ public class Util {
 	 Iterator iterate = table.iterator();
 	 double sum = 0;
 	 while(iterate.hasNext()){
-		 int i = (int) iterate.next();
-		 sum = Math.pow(table.getCountAt(i), 2);
+		 sum += Math.pow(iterate.next(),2);
 	 }
 	 return Math.sqrt(sum);
   }
@@ -144,7 +151,14 @@ public class Util {
     for (int i = 0; i < testData.length; i++) {
     	test.increment(new Color(testData[i]));
     }
-    System.out.println(cosineSimilarity(test, test));
-    
+    Color[] iteratorTest = {new Color(0,0,0),
+   		 new Color(0,0,128), new Color(0,128,0), new Color(0,128,128),
+   		 new Color(128,0,0), new Color(128,0,128),new Color(128,128,0),
+   		 new Color(128,128,128)};
+    ColorTable test1 = new ColorTable(10, 1, Constants.LINEAR, 1);
+    for (int i = 0; i < iteratorTest.length; i++) {
+    	test1.increment(iteratorTest[i]);
+    }
+    System.out.println(cosineSimilarity(test1, test1));
   }
 }

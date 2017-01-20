@@ -1,6 +1,6 @@
 /**
  * TODO
- * @author (your name goes here)
+ * @author (Christopher Sinders)
  */
 
 public class Driver {
@@ -14,7 +14,17 @@ public class Driver {
    * is restricted to bitsPerChannel. Increment numCollisions after each increment.
    */
   public static ColorTable vectorize(Image image, int bitsPerChannel) {
-    return null;
+	  image = image.quantize(bitsPerChannel);
+	  ColorTable table = new ColorTable(5,bitsPerChannel, Constants.LINEAR, .8);
+	  int height = image.getHeight();
+	  int width = image.getWidth();
+	  for (int x = 0; x < width; x++) {
+		  for (int y = 0; y < height; y++) {
+			  table.increment(image.getColor(x, y));
+			  numCollisions++;
+		  }
+	  }
+    return table;
   }
 
   /**
@@ -25,7 +35,11 @@ public class Driver {
    * Note: If you compute the similarity of an image with itself, it should be close to 1.0.
    */
   public static double similarity(Image image1, Image image2, int bitsPerChannel) {
-    return 1.0;
+	  double ans = 0;
+	  ColorTable table1 = vectorize(image1, bitsPerChannel);
+	  ColorTable table2 = vectorize(image2, bitsPerChannel);
+	  ans = Util.cosineSimilarity(table1, table2);
+	  return ans;
   }
 
   /**
@@ -68,5 +82,6 @@ public class Driver {
     System.out.println("christina's dimensions are " + 
         christina.getWidth() + " x " + christina.getHeight());
     // allPairsTest();
+    System.out.println(similarity(mona,mona, 8));
   }
 }

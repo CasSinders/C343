@@ -39,7 +39,53 @@ public class ColorTable {
   public static int getNumCollisions() {
     return numCollisions;
   }
-
+ public  class Iterat implements Iterator {
+	  int r = 0;
+	  int g = 0;
+	  int b = 0;
+	  int step = (int) (256 / Math.pow(2, bitsPerChannel));
+	  
+	  
+	  public boolean hasNext() {
+		  int finalIndex = (int) (step * (Math.pow(2, bitsPerChannel) -1));
+		  // only if flag is true does it mean that there is no next one.
+		  boolean flag = (r == finalIndex &&
+		  g == finalIndex &&
+		  b == finalIndex) || 
+		  (r == 255 && b == 255 && g == 255);
+		  return !flag;
+		  
+		// TO DO
+		  
+	  }
+	  public long next() {
+		  long ans = 0;
+		  if(this.hasNext()) {
+			  //System.out.println("I'm inside of hasNext()'s loop");
+			  // get the current answer
+			  if (table[getIndex(new Color(r,g,b))] == null) {
+				 // System.out.println("color was not in there");
+				  ans = 0;
+			  } else {
+				  ans = table[getIndex(new Color(r,g,b))].getCount();
+				//  System.out.println("The color was found");
+			  }
+			  // switch the rgb values to the next set
+			  if (g < b) {
+				  g+=step;
+				  b = 0;
+			  } else if (r < g) {
+				  r+=step;
+				  g = 0;
+				  b = 0;			  
+			  } else {
+				  b+=step;
+			  }
+		  }
+		  //System.out.println("the new rgb is " + r + " " + g + " " + b);
+		  return ans;
+		  }
+ }
   /**
    * Constructs a color table with a starting capacity of initialCapacity. Keys in
    * the color key space are truncated to bitsPerChannel bits. The collision resolution
@@ -113,9 +159,7 @@ public class ColorTable {
    * or equal to zero. Uses Util.pack() as the hash function.
    */
   public void put(Color color, long count) {
-  /**
-   * increment the current size of the array.
-   */
+	  // increment current size of the array
 	  currentSize++;
 	  if (getLoadFactor()  > rehashThreshold) {
 		  rehash();
@@ -136,6 +180,8 @@ public class ColorTable {
 	if (table[index] == null) {
 		table[index] = new KeyValue(color, 1);
 		currentSize++;
+		 // System.out.println(currentSize);
+
 	} else {
 		table[index].incrementCount();
 	}
@@ -250,38 +296,6 @@ public class ColorTable {
    * returns the sequence of frequency counts.
    */
   public Iterator iterator() {
-	  class Iterat implements Iterator {
-		  long current = 0;
-		  int r = 0;
-		  int g = 0;
-		  int b = 0;
-		  int currentChannel = bitsPerChannel;
-		  public boolean hasNext() {
-			// TO DO 
-			  
-			  
-			  
-			  
-		  }
-		  public long next() {
-			  if(this.hasNext()) {
-				  long ans = 0;
-				  // get the current answer
-				  if (table[getIndex(new Color(r,g,b))] == null) {
-					  ans = 0;
-				  } else {
-					  ans = table[getIndex(new Color(r,g,b))].getCount();
-				  }
-				  // switch the rgb values to the next set
-				  
-				  
-				  
-				  
-				  //
-			  }
-			  return ans;
-		  }
-	  }
     return new Iterat();
   }
   
@@ -289,8 +303,8 @@ public class ColorTable {
    * Finds the index of a color, or the next available index
    */
   public int getIndex(Color color) {
-	  // System.out.println("testing " + getLoadFactor() + " > " + rehashThreshold);
-	  if (getLoadFactor() > rehashThreshold) {
+	  //System.out.println("testing " + getLoadFactor() + " > " + rehashThreshold);
+	  if (getLoadFactor() >= rehashThreshold) {
 		  rehash();
 	  }
 	  // System.out.println("Inside of getIndex");
@@ -304,7 +318,7 @@ public class ColorTable {
 		  while(table[index] != null) {
 			  // System.out.println("returning " + index);
 			  if (table[index].getKey().equals(color)) {
-				  // System.out.println(index);
+				   //System.out.println(index);
 				  return index;
 			  }
 			  collision++;
@@ -398,5 +412,17 @@ public class ColorTable {
        */
      System.out.println(table);
      System.out.println(test);
+     Color[] iteratorTest = {new Color(0,0,0),
+    		 new Color(0,0,128), new Color(0,128,0), new Color(0,128,128),
+    		 new Color(128,0,0), new Color(128,0,128),new Color(128,128,0),
+    		 new Color(128,128,128)};
+     test = new ColorTable(3,8,Constants.LINEAR, 1);
+     for (int i = 0; i < iteratorTest.length; i++) {
+    	 test.increment(iteratorTest[i]);
+     }
+     System.out.println(test);
+     System.out.println("capacity: " + test.getCapacity()); // Expected: 11
+     System.out.println("size: " + test.getSize());         // Expected: 8
+     Iterator iteratorTestor = test.iterator();
   }
 }
