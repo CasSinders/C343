@@ -265,6 +265,7 @@ public class GUI extends JFrame {
     if (j >= i) 
       j++;
     Image pic1 = paintings.get(i), pic2 = paintings.get(j);
-    SwingUtilities.invokeLater(() -> new GUI(pic1, pic2));    
+    SwingUtilities.invokeLater(() -> new GUI(pic1, pic2));
+    
   }
 }

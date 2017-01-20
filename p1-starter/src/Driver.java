@@ -8,8 +8,7 @@ public class Driver {
   private static int numCollisions;
   
   /**
-   * TODO
-   * 
+   *  
    * Return the ColorTable associated with this image, assuming the color key space
    * is restricted to bitsPerChannel. Increment numCollisions after each increment.
    */
@@ -74,6 +73,7 @@ public class Driver {
     Image mona = Painting.MONA_LISA.get();
     Image starry = Painting.STARRY_NIGHT.get();
     Image christina = Painting.CHRISTINAS_WORLD.get();
+    Image degas = Painting.BLUE_DANCERS.get();
     System.out.println("It looks like all three test images were successfully loaded.");
     System.out.println("mona's dimensions are " + 
         mona.getWidth() + " x " + mona.getHeight());
@@ -83,5 +83,22 @@ public class Driver {
         christina.getWidth() + " x " + christina.getHeight());
     // allPairsTest();
     System.out.println(similarity(mona,mona, 8));
+    int experiment = 4;
+    Image[] testArray = new Image[4];
+    testArray[0] = mona;
+    testArray[1] = starry;
+    testArray[2] = christina;
+    testArray[3] = degas;
+    for (int i = 0; i < testArray.length; i++) {
+    	double similarity = similarity(testArray[2],testArray[i],4);
+    	System.out.println("Testing the Starry Night vs " + "testArray[" + i + "]");
+    	System.out.println("The number of collisions is " + numCollisions);
+    	System.out.println("The Similarity is " + similarity);
+    	System.out.println();
+    }
+    
+    
+    
+    
   }
 }
