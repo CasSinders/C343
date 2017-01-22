@@ -60,7 +60,7 @@ public class Testing {
     assertEquals(0, table.get(Color.CYAN));
     assertEquals(0, table.getSize());
   }
-
+ 
   @Test
   public void testIncrementAndGet() {
     table = new ColorTable(3, 4, Constants.LINEAR, 0.9);
@@ -72,7 +72,7 @@ public class Testing {
     assertEquals(100, table.get(Color.BLUE));
     assertEquals(2, table.get(Color.RED));
   }
-
+ 
   @Test
   public void testIncrementTruncated() {
     table = new ColorTable(3, 1, Constants.LINEAR, 0.9);  // just using 3 bits for a color
@@ -114,7 +114,7 @@ public class Testing {
     assertEquals(3, table.getSize());
     assertEquals(7, table.getCapacity());
 
-    // System.out.println(table);
+
 
     // Check the final frequency counts.
     assertEquals(1, table.get(Color.RED));
@@ -206,8 +206,8 @@ public class Testing {
     Iterator it = table.iterator();
     int k = 0;
     while (it.hasNext() && k < expected.length) {
-      assertEquals(expected[k], it.next());
-      k++;
+			assertEquals(expected[k], it.next());
+		      k++;
     }
     
     table = new ColorTable(13, 2, Constants.QUADRATIC, 0.49);

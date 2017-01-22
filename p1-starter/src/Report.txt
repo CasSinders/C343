@@ -12,7 +12,7 @@ I used a key/value pair implementation.  I believed that it would be easier to k
 
 2.) If you implemented any helper methods for ColorTable, other than those specified in the starter code, describe each one briefly. Explain your reasoning for implementing each helper.
 
-For ColorTable I implemented Iterat as a public class inside of Colortable so that it can implement Iterator.   I also implemented a function of getIndex that gets either the index of the color passed into it, or  the next avaliable index inside of the array.  I created this because put and increment seemed to have similar  code and this one seemed like it could be used for both.  
+For ColorTable I implemented Iterat as a public class inside of Colortable so that it can implement Iterator.   I also implemented a function of getIndex that gets either the index of the color passed into it, or  the next avaliable index inside of the array.  I created this because put and increment seemed to have similar  code and this one seemed like it could be used for both.  As a special function for getIndex, I implemented getNextIndex gives only the next index to check based on how many collisions there have been.
 
 
 
