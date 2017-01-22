@@ -30,7 +30,6 @@ public class ColorTable {
 	private int tableSize;
 	private int currentSize = 0;
 	private KeyValue[] table;
-
 	/**
 	 * Returns the number of collisions that occurred during the most recent get
 	 * or put operation.
