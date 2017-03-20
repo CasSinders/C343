@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 /*
  * People who contributed
  *  Christopher Sinders - Wrote initial version
+ *  Justin Keller - Proof read submission
  * 
  */
 
